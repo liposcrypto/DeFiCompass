@@ -1,0 +1,40 @@
+# scripts/liquidity_tracking.py
+
+import requests
+import pandas as pd
+
+def fetch_liquidity_pools(api_url):
+    """
+    Fetch liquidity pools data from the DeFi API.
+    
+    :param api_url: Base URL of the DeFi API
+    :return: DataFrame with liquidity pool data
+    """
+    response = requests.get(f'{api_url}/liquidity_pools')
+    response.raise_for_status()
+    data = response.json()
+    df = pd.DataFrame(data)
+    return df
+
+def analyze_liquidity_pools(df):
+    """
+    Analyze liquidity pools performance.
+    
+    :param df: DataFrame with liquidity pool data
+    :return: DataFrame with analysis results
+    """
+    analysis = {
+        'total_liquidity': df['liquidity'].sum(),
+        'average_liquidity': df['liquidity'].mean(),
+        'highest_liquidity': df['liquidity'].max(),
+        'lowest_liquidity': df['liquidity'].min()
+    }
+    analysis_df = pd.DataFrame([analysis])
+    return analysis_df
+
+# Example usage:
+# api_url = 'https://api.defi.example.com'
+# liquidity_pools_df = fetch_liquidity_pools(api_url)
+# print(liquidity_pools_df)
+# liquidity_analysis_df = analyze_liquidity_pools(liquidity_pools_df)
+# print(liquidity_analysis_df)
